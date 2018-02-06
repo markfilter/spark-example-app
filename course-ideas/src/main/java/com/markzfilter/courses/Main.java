@@ -1,5 +1,7 @@
 package com.markzfilter.courses;
 
+import com.markzfilter.courses.model.CourseIdeaDAO;
+import com.markzfilter.courses.model.SimpleCourseIdeaDAO;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
 
@@ -11,6 +13,12 @@ import static spark.Spark.*;
 public class Main {
 
     public static void main(String[] args) {
+
+        staticFileLocation("/public");
+        // This is just for prototyping
+        // This should be replaced with an implementation for a database or
+        // saving to disk.
+        CourseIdeaDAO dao = new SimpleCourseIdeaDAO();
 
 //        get("/", (req, res) -> "<h1>Welcome Students!</h1>");
 //        get("/hello", (req, res) -> "<h1>Hello World</h1>");
