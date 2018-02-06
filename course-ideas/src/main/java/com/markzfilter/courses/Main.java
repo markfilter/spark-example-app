@@ -1,5 +1,6 @@
 package com.markzfilter.courses;
 
+import com.markzfilter.courses.model.CourseIdea;
 import com.markzfilter.courses.model.CourseIdeaDAO;
 import com.markzfilter.courses.model.SimpleCourseIdeaDAO;
 import spark.ModelAndView;
@@ -43,6 +44,25 @@ public class Main {
         }, new HandlebarsTemplateEngine());
 
 
+        get("/ideas", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("ideas", dao.findAll());
+
+            return new ModelAndView(model, "ideas.hbs");
+        }, new HandlebarsTemplateEngine());
+
+
+        post("/ideas", (req, res) -> {
+
+            String title = req.queryParams("title");
+
+            CourseIdea courseIdea = new CourseIdea(title, req.cookie("username"));
+            dao.add(courseIdea);
+
+            res.redirect("/ideas");
+
+            return null;
+        });
     }
 
 }
