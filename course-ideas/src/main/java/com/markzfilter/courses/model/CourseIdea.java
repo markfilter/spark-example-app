@@ -2,9 +2,7 @@ package com.markzfilter.courses.model;
 
 import com.github.slugify.Slugify;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class CourseIdea {
 
@@ -46,6 +44,10 @@ public class CourseIdea {
 
     public int getVoteCount() {
         return voters.size();
+    }
+
+    public List<String> getVoters() {
+        return new ArrayList<>(voters);
     }
 
 
