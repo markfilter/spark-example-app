@@ -21,12 +21,37 @@ public class Main {
         // saving to disk.
         CourseIdeaDAO dao = new SimpleCourseIdeaDAO();
 
-//        get("/", (req, res) -> "<h1>Welcome Students!</h1>");
-//        get("/hello", (req, res) -> "<h1>Hello World</h1>");
+
+        // Middleware ======================================
+        // If a filter has no routes defined, then it is fired after every request
+        // In this case, if the request has a cookie, then add an attribute to the
+        // request.
+        // Now, if you have references to checks in routes req.cookie("username"),
+        // you can replace it with req.attribute("username")
+        before((req, res) -> {
+            if (req.cookie("username") != null) {
+                req.attribute("username", req.cookie("username"));
+                halt();
+            }
+        });
+
+
+        // First, catch the Uri you want to protect.
+        // Second, filter object (req, res)
+        // Third, check to make sure that a username exists in the cookie
+        // if it does NOT, then redirect to the Home page.
+        // Add the halt() method to prevent further processing from additional routes
+        // that could be triggered by the redirect.
+        before("/ideas", (req, res) -> {
+            if (req.attribute("username") == null) {
+                res.redirect("/");
+                halt();
+            }
+        });
 
         get("/", (req, res) -> {
             Map<String, String> model = new HashMap<>();
-            model.put("username", req.cookie("username"));
+            model.put("username", req.attribute("username"));
 
             return new ModelAndView(model, "index.hbs");
         }, new HandlebarsTemplateEngine());
@@ -56,7 +81,7 @@ public class Main {
 
             String title = req.queryParams("title");
 
-            CourseIdea courseIdea = new CourseIdea(title, req.cookie("username"));
+            CourseIdea courseIdea = new CourseIdea(title, req.attribute("username"));
             dao.add(courseIdea);
 
             res.redirect("/ideas");
