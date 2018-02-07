@@ -31,7 +31,6 @@ public class Main {
         before((req, res) -> {
             if (req.cookie("username") != null) {
                 req.attribute("username", req.cookie("username"));
-//                halt(); // Halt caused issues with proper implementation of the application
             }
         });
 
@@ -87,6 +86,16 @@ public class Main {
             res.redirect("/ideas");
 
             return null;
+        });
+
+
+        post("/ideas/:slug/vote", (req, res) -> {
+
+            CourseIdea idea = dao.findBySlug(req.params("slug"));
+            idea.addVoter(req.attribute("username"));
+            res.redirect("/ideas");
+            return null;
+
         });
     }
 
