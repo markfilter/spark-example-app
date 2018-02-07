@@ -31,7 +31,7 @@ public class Main {
         before((req, res) -> {
             if (req.cookie("username") != null) {
                 req.attribute("username", req.cookie("username"));
-                halt();
+//                halt(); // Halt caused issues with proper implementation of the application
             }
         });
 
