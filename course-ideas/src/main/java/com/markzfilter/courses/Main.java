@@ -2,6 +2,7 @@ package com.markzfilter.courses;
 
 import com.markzfilter.courses.model.CourseIdea;
 import com.markzfilter.courses.model.CourseIdeaDAO;
+import com.markzfilter.courses.model.NotFoundException;
 import com.markzfilter.courses.model.SimpleCourseIdeaDAO;
 import spark.ModelAndView;
 import spark.template.handlebars.HandlebarsTemplateEngine;
@@ -99,11 +100,22 @@ public class Main {
         });
 
 
-        get("/ideas/:slug/vote", (req, res) -> {
+        get("/ideas/:slug", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             model.put("idea", dao.findBySlug(req.params("slug")));
             return new ModelAndView(model, "idea.hbs");
         }, new HandlebarsTemplateEngine());
+
+
+
+        // Handling Exceptions
+        exception(NotFoundException.class, (exc, req, res) -> {
+            res.status(404);
+            HandlebarsTemplateEngine engine = new HandlebarsTemplateEngine();
+            String html = engine.render(new ModelAndView(null, "not-found.hbs"));
+            res.body(html);
+        });
+
     }
 
 }
